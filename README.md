@@ -1,4 +1,4 @@
-# nextjs-ssr-essentials
+# next-client-utils
 
 > 🧩 Essential utilities for building scalable, typed, and component-driven Next.js client-side apps.
 
@@ -17,6 +17,6 @@
 ## 📦 Installation
 
 ```bash
-npm install nextjs-ssr-essentials
+npm install next-client-utils
 # or
-yarn add nextjs-ssr-essentials
+yarn add next-client-utils

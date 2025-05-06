@@ -1,6 +1,6 @@
 {
   "name": "next-client-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Essential utilities for Next.js projects (separate client/server exports)",
   "type": "module",
   "main": "./dist/index.js",
@@ -12,6 +12,22 @@
     "build": "tsup src/index.ts --format esm --dts --clean",
     "dev": "tsup src/index.ts --watch --dts --format esm"
   },
+  "keywords": [
+    "popover",
+    "popup",
+    "tooltip",
+    "dropdown",
+    "menu",
+    "modal",
+    "dialog",
+    "portal",
+    "overlay",
+    "focus-trap",
+    "react-hooks",
+    "outisde-click",
+    "nextjs",
+    "react"
+  ],
   "author": "Prateek Sharma",
   "license": "MIT",
   "peerDependencies": {

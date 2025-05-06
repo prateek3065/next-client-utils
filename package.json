@@ -1,6 +1,6 @@
 {
   "name": "next-client-utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Essential utilities for Next.js projects (separate client/server exports)",
   "type": "module",
   "main": "./dist/index.js",
@@ -26,7 +26,9 @@
     "react-hooks",
     "outisde-click",
     "nextjs",
-    "react"
+    "react",
+    "conversation-ui-pattern",
+    "conversation-thread-ui-pattern"
   ],
   "author": "Prateek Sharma",
   "license": "MIT",

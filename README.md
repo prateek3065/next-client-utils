@@ -21,6 +21,7 @@
 
 ```tsx
 // Server Component (module-1)
+import { WithPopup } from 'next-client-utils';
 
 export default function ServerComponent() {
   return (
@@ -48,6 +49,7 @@ const PopUp: React.FC<{}> = () => {
 
 ```tsx
 // Server Component (module-1)
+import { WithPopup } from 'next-client-utils';
 
 export default function ServerComponent() {
   return (
@@ -93,6 +95,7 @@ const UserName: React.FC<UserNameProps> = ({ isPopUpActive, children }) => {
 
 ```tsx
 // Server Component (module-1)
+import {WithPopup} from 'next-client-utils';
 
 export default function ServerComponent(props: any) {
   // Define server-rendered popup via 'use server' function

@@ -253,7 +253,11 @@ export const WithPopup = <P extends Record<string, unknown>>(
               onMouseEnter={onMouseEnterPopup}
               onMouseLeave={onMouseLeavePopup}
             >
-              {PopUp ? <PopUp {...props.popupProps} /> : <>{ssrPopUpJSX}</>}
+              {PopUp ? (
+                <PopUp {...props.popupProps} close={onOutsideClick} />
+              ) : (
+                <>{ssrPopUpJSX}</>
+              )}
             </div>,
             document.body
           )

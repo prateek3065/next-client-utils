@@ -21,12 +21,6 @@ const Container: React.FC<ContainerProps> = (props) => {
   const requestTriggerMouseEventAction = (incIsOpen: boolean) => {
     if (props.isPopupOpen != incIsOpen) {
       props.triggerMouseEventAction(incIsOpen);
-      if (incIsOpen == true) console.log("popup opened");
-      else console.log("popup closed");
-    } else {
-      console.log(
-        `nothing happened, pop up is still ${incIsOpen ? "open" : "closed"}`
-      );
     }
     if (isOpenRequest) {
     }

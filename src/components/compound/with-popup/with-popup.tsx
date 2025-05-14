@@ -32,6 +32,8 @@ export type PopupAlignment =
       position?: undefined;
     };
 
+export type TriggerType = "click" | "hover" | undefined;
+
 type PopupType<P extends Record<string, unknown>> =
   | {
       PopUp: FC<P>;
@@ -44,10 +46,10 @@ type PopupType<P extends Record<string, unknown>> =
       loadingJSX?: ReactNode;
     };
 
-type WithPopupProps<P extends Record<string, unknown>> = {
+export type WithPopupProps<P extends Record<string, unknown>> = {
   children: ReactNode;
   popupProps: P;
-  triggerType?: "click" | "hover";
+  triggerType: TriggerType;
   buttonContainerStyle?: CSSProperties;
   popupContainerStyle?: CSSProperties;
   popupAlignments?: PopupAlignment;
@@ -113,7 +115,6 @@ export const WithPopup = <P extends Record<string, unknown>>(
 
   const setPopUpDimensions = useCallback(
     debounce(() => {
-      console.log("debounce");
       const buttonRect = buttonContainerRef.current?.getBoundingClientRect();
       const popUpRect = popUpContainerRef.current?.getBoundingClientRect();
       if (buttonRect && popUpRect) {

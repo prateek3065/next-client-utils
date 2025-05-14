@@ -1,1 +1,1 @@
-export { WithPopup } from "./with-popup";
+export { WithPopup, PopupAlignment, TriggerType } from "./with-popup";

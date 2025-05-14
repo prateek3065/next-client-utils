@@ -20,7 +20,7 @@
 ## 🔍 What does it look like?
 
 ```tsx
-// Server Component (module-1)
+//  Server Component (module-1)
 import { WithPopup } from 'next-client-utils';
 
 export default function ServerComponent() {

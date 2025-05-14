@@ -39,8 +39,15 @@ export default function ServerComponent() {
 // Client Component (module-2)
 'use client';
 
-const PopUp: React.FC<{}> = () => {
-  return <div>This is PopUp</div>; // Style this as needed
+type PopUpProp={
+   close?: () => void // make sure you make it optional or else typescript will throw error.
+}
+
+const PopUp: React.FC<PopUpProp> = (props) => {
+  // use props.close() to close modal
+  return <div><p>This is PopUp</p>
+   <button onClick={props.close?.()}>Close</button>
+  </div>; // Style this as needed
 };
 ```
 

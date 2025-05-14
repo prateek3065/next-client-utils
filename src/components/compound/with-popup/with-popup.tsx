@@ -32,7 +32,7 @@ export type PopupAlignment =
       position?: undefined;
     };
 
-export type TriggerType = "click" | "hover" | undefined;
+export type TriggerType = "click" | "hover";
 
 type PopupType<P extends Record<string, unknown>> =
   | {
@@ -49,7 +49,7 @@ type PopupType<P extends Record<string, unknown>> =
 export type WithPopupProps<P extends Record<string, unknown>> = {
   children: ReactNode;
   popupProps: P;
-  triggerType: TriggerType;
+  triggerType?: TriggerType;
   buttonContainerStyle?: CSSProperties;
   popupContainerStyle?: CSSProperties;
   popupAlignments?: PopupAlignment;

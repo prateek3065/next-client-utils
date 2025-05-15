@@ -40,7 +40,7 @@ export default function ServerComponent() {
 'use client';
 
 type PopUpProp={
-   close?: () => void // make sure you make it optional or else typescript will throw error.
+   close?: () => void //  make sure you make it optional or else typescript will throw error.
 }
 
 const PopUp: React.FC<PopUpProp> = (props) => {

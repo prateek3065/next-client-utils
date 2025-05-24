@@ -8,7 +8,7 @@ type GetPopUpCordinatesProps = {
   popupAlignments?: PopupAlignment;
   gap: number;
 };
-const getPopUpCordinates = ({
+export const getPopUpCordinates = ({
   buttonRect,
   popUpRect,
   popupAlignments,
@@ -18,6 +18,7 @@ const getPopUpCordinates = ({
   left: `${number}px` | undefined;
   right: `${number}px` | undefined;
   bottom: `${number}px` | undefined;
+  sideRendered: "left" | "right" | "top" | "bottom";
 } => {
   const windowHeight = window.innerHeight;
   const windowWidth = window.innerWidth;
@@ -105,6 +106,7 @@ const getPopUpCordinates = ({
         top: `${clampedTop}px`,
         left: undefined,
         bottom: undefined,
+        sideRendered: availableSide,
       };
     } else {
       // Left edge of popup should be aligned with left edge of button
@@ -114,6 +116,7 @@ const getPopUpCordinates = ({
         top: `${clampedTop}px`,
         right: undefined,
         bottom: undefined,
+        sideRendered: availableSide,
       };
     }
   } else if (
@@ -139,6 +142,7 @@ const getPopUpCordinates = ({
         bottom: `${bottom}px`,
         top: undefined,
         right: undefined,
+        sideRendered: availableSide,
       };
     } else {
       // Top edge of popup should be aligned with top edge of button
@@ -148,6 +152,7 @@ const getPopUpCordinates = ({
         top: `${top}px`,
         bottom: undefined,
         right: undefined,
+        sideRendered: availableSide,
       };
     }
   }
@@ -157,6 +162,7 @@ const getPopUpCordinates = ({
     left: `${clampedLeft}px`,
     right: undefined,
     bottom: undefined,
+    sideRendered: availableSide,
   };
 };
 export default getPopUpCordinates;

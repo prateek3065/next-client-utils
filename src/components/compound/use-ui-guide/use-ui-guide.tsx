@@ -9,13 +9,14 @@ type UiGuideProps = {
   zIndex?: number;
 };
 export const useUIGuide = (props: UiGuideProps) => {
-  const { guideIds, zIndex = 10000 } = props;
+  const { guideIds, zIndex = 20000 } = props;
   const { contextState, setContextState } = useNextClientUtilsContext();
   const [isGuideReady, setIsGuideReady] = useState<boolean>(false);
 
   useLimeLightContainer({
-    id: "question-btn",
+    id: contextState.uiGuide?.currentGuideId,
     isActive: isGuideReady && contextState.uiGuide.currentGuideId != null,
+    zIndex: zIndex,
   });
 
   const setCurrentGuideId = (guideId: string) => {

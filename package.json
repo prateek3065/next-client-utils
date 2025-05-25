@@ -1,6 +1,6 @@
 {
   "name": "next-client-utils",
-  "version": "1.0.16",
+  "version": "1.2.0",
   "description": "Essential utilities for Next.js projects (separate client/server exports)",
   "type": "module",
   "main": "./dist/index.js",

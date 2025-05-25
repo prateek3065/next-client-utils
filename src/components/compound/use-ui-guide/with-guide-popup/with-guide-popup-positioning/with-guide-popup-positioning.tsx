@@ -23,7 +23,7 @@ type WithGuidePopupPositioningProps = {
   popupStyle: React.CSSProperties;
   gap?: number;
   id: string;
-
+  currentActiveGuideId: string | null;
   elementType?: "div" | "button" | "span";
   onClick?: ((props: any) => any) | undefined;
 };
@@ -42,6 +42,7 @@ const WithGuidePopupPositioning: React.FC<WithGuidePopupPositioningProps> = (
     popupStyle,
     className,
   } = props;
+
   const [state, setState] = useState<State>({
     stateId: 1,
     isPopupOpen: false,
@@ -80,12 +81,31 @@ const WithGuidePopupPositioning: React.FC<WithGuidePopupPositioningProps> = (
           };
           newState.renderedSideOfPopUp = sideRendered;
           newState.stateId = 3;
+
           return newState;
         });
       }
     }, 50),
-    [mainContainerRef, popUpContainerRef]
+    [mainContainerRef, popUpContainerRef, popupStyle]
   );
+
+  const createCloneAtBody = (cloneStyle: React.CSSProperties) => {
+    if (document.getElementById(id + "-clone"))
+      document.getElementById(id + "-clone")?.remove();
+    const original = document.getElementById(id);
+
+    if (original) {
+      const copy = original.cloneNode(true) as HTMLElement;
+
+      // Set a new unique ID for the clone
+      copy.id = `${id}-clone`;
+
+      // Optional: style or position the clone
+      Object.assign(copy.style, cloneStyle);
+
+      document.body.appendChild(copy);
+    }
+  };
 
   useEffect(() => {
     if (state.stateId == 2) {
@@ -94,12 +114,39 @@ const WithGuidePopupPositioning: React.FC<WithGuidePopupPositioningProps> = (
   }, [state]);
 
   useEffect(() => {
+    setState((prevState) => {
+      return {
+        ...prevState,
+        popupContainerStyle: props.popupStyle,
+      };
+    });
+
+    const buttonRect = mainContainerRef.current?.getBoundingClientRect();
+    if (state.isPopupOpen && buttonRect) {
+      createCloneAtBody({
+        ...style,
+        position: "fixed",
+        visibility: "visible",
+        pointerEvents: "none",
+        zIndex: props.popupStyle.zIndex,
+        top: buttonRect.top + "px",
+        left: buttonRect.left + "px",
+        width: buttonRect.width + "px",
+        height: buttonRect.height + "px",
+      });
+    }
+  }, [props.popupStyle.zIndex, state.isPopupOpen]);
+
+
+  useEffect(() => {
     if (!state.isPopupOpen) {
+      document.getElementById(id + "-clone")?.remove();
       setState({
         stateId: 1,
         isPopupOpen: false,
         popupContainerStyle: popupStyle,
         renderedSideOfPopUp: null,
+        // clonedContainerStyle: style ?? {},
       });
     }
   }, [state.isPopupOpen]);
@@ -142,7 +189,10 @@ const WithGuidePopupPositioning: React.FC<WithGuidePopupPositioningProps> = (
         <div
           ref={mainContainerRef}
           id={id}
-          style={style}
+          style={{
+            ...style,
+            visibility: state.isPopupOpen ? "hidden" : style?.visibility,
+          }}
           className={className}
           onClick={props.onClick}
         >
@@ -154,7 +204,10 @@ const WithGuidePopupPositioning: React.FC<WithGuidePopupPositioningProps> = (
           ref={mainContainerRef}
           className={className}
           id={id}
-          style={style}
+          style={{
+            ...style,
+            visibility: state.isPopupOpen ? "hidden" : style?.visibility,
+          }}
           onClick={props.onClick}
         >
           {children}
@@ -165,7 +218,10 @@ const WithGuidePopupPositioning: React.FC<WithGuidePopupPositioningProps> = (
           ref={mainContainerRef as unknown as any}
           className={className}
           id={id}
-          style={style}
+          style={{
+            ...style,
+            visibility: state.isPopupOpen ? "hidden" : style?.visibility,
+          }}
           onClick={props.onClick}
         >
           {children}

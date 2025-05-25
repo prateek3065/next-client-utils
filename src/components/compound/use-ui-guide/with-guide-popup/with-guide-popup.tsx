@@ -18,7 +18,8 @@ type WithGuideProps = {
 export type GuidePopUpProps = {
   onNextClick: () => void;
   onPrevClick: () => void;
-  onExitGuide: () => void;
+  onExitGuide?: () => void;
+  currentIndex?: number | null;
   renderedSideOfPopUp?: "top" | "bottom" | "left" | "right";
 };
 
@@ -31,10 +32,19 @@ export const WithGuidePopup: React.FC<WithGuideProps> = (props) => {
     hasSuspense = false,
     elementType = "div",
   } = props;
-  const [style, setStyle] = useState<React.CSSProperties>(props.style ?? {});
-  const prevStyle = useMemo(() => {
-    return { ...props.style };
-  }, []);
+
+  const [idToIndexMap, setIdToIndexMap] = useState<
+    Map<
+      string,
+      {
+        index: number;
+        nextId: string | null;
+        nextIndex: number | null;
+        prevId: string | null;
+        prevIndex: number | null;
+      }
+    >
+  >(new Map());
 
   const { contextState, setContextState } = useNextClientUtilsContext();
   const [showGuide, setShowGuide] = useState(false);
@@ -55,18 +65,9 @@ export const WithGuidePopup: React.FC<WithGuideProps> = (props) => {
     }
     if (hasSuspense) return;
     if (contextState.uiGuide.currentGuideId == id) {
-      setStyle((prevStyle) => {
-        return {
-          ...prevStyle,
-          zIndex: contextState.uiGuide.zIndex,
-          position: "relative",
-          pointerEvents: "none",
-        };
-      });
       setShowGuide(true);
       return;
     } else {
-      setStyle({ ...prevStyle, pointerEvents: "unset" });
       setShowGuide(false);
     }
     const guideState = contextState.uiGuide.guides.find((guide) => {
@@ -84,6 +85,33 @@ export const WithGuidePopup: React.FC<WithGuideProps> = (props) => {
       return newState;
     });
   }, [contextState, hasSuspense]);
+
+  const onExitGuide = () => {
+    setContextState((prevState) => {
+      const newState = { ...prevState };
+      newState.uiGuide.currentGuideId = null;
+      return newState;
+    });
+    setShowGuide(false);
+  };
+
+  const onPrevClick = () => {
+    setContextState((prevState) => {
+       if (idToIndexMap.get(id)?.index == 0) return prevState; 
+      const newState = { ...prevState };
+      let prevGuideIndex: null | number = null;
+      for (let i = 0; i < newState.uiGuide.guides.length; i++) {
+        if (newState.uiGuide.guides[i].id == id && i != 0) {
+          prevGuideIndex = i - 1;
+        }
+      }
+      if (prevGuideIndex != null)
+        newState.uiGuide.currentGuideId =
+          newState.uiGuide.guides[prevGuideIndex].id;
+      else newState.uiGuide.currentGuideId = null;
+      return newState;
+    });
+  };
 
   const onNextClick = () => {
     setContextState((prevState) => {
@@ -105,31 +133,70 @@ export const WithGuidePopup: React.FC<WithGuideProps> = (props) => {
     });
   };
 
+  const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({
+    position: "fixed",
+    visibility: "hidden",
+    transitionProperty: "all",
+    top: "0px",
+    left: "0px",
+  });
+
+  useEffect(() => {
+    const newZIndex = contextState.uiGuide?.zIndex;
+    if (newZIndex != undefined)
+      setPopupStyle((prevStyle) => {
+        return { ...prevStyle, zIndex: newZIndex + 1 };
+      });
+  }, [contextState]);
+
+  const guides = useMemo(() => {
+    return contextState.uiGuide?.guides || [];
+  }, [contextState]);
+
+  useEffect(() => {
+    if (!guides) return;
+    const idIndexMap: typeof idToIndexMap = new Map();
+    guides.forEach((guide, index) => {
+      const info: {
+        index: number;
+        nextId: string | null;
+        nextIndex: number | null;
+        prevId: string | null;
+        prevIndex: number | null;
+      } = {
+        index: index,
+        nextId: index < guides.length - 1 ? guides[index + 1].id : null,
+        nextIndex: index < guides.length - 1 ? index + 1 : null,
+        prevId: index > 0 ? guides[index - 1].id : null,
+        prevIndex: index > 0 ? index - 1 : null,
+      };
+      idIndexMap.set(guide.id, info);
+    });
+    setIdToIndexMap(idIndexMap);
+  }, [guides]);
+
   return (
     <WithGuidePopupPositioning
       id={id}
+      currentActiveGuideId={contextState.uiGuide?.currentGuideId}
       elementType={elementType}
       onClick={onClick}
       GuidPopup={GuidPopup}
       className={className}
       guidePopupProps={{
         onNextClick: onNextClick,
-        onPrevClick: () => {},
-        onExitGuide: () => {},
+        onPrevClick: onPrevClick,
+        onExitGuide: onExitGuide,
+        currentIndex:
+          contextState.uiGuide?.currentGuideId != undefined ||
+          contextState.uiGuide?.currentGuideId != null
+            ? idToIndexMap.get(contextState.uiGuide.currentGuideId)?.index
+            : null,
       }}
       gap={16}
-      style={style}
+      style={props.style}
       showPopup={showGuide}
-      popupStyle={{
-        position: "fixed",
-        visibility: "hidden",
-        zIndex: contextState.uiGuide ? contextState.uiGuide.zIndex + 1 : 10000,
-        transitionProperty: "all",
-        // transitionTtimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-        //   transitionDuration: '150ms',
-        top: "0px",
-        left: "0px",
-      }}
+      popupStyle={popupStyle}
     >
       {props.children}
     </WithGuidePopupPositioning>
